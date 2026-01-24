@@ -13,7 +13,7 @@
   }
 
   .viewer {
-    max-width: 1200px;       /* maximum width on large screens */
+    max-width: 1000px;       /* maximum width on large screens */
     width: 95%;              /* scales down to 95% of viewport on smaller screens */
     margin: 2em auto;
     background: #ffffff;
@@ -30,17 +30,19 @@
   }
 
   .image-container {
-    border: 1px solid #ccc;
-    margin: 1em 0;
-  }
+  border: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 12px;           /* space around image */
+  background: #f9f9f9;     /* subtle contrast */
+}
 
-  .image-container img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 80vh;       /* prevents image from being taller than screen */
-    object-fit: contain;
-  }
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 75vh;        /* slightly less tall */
+  object-fit: contain;
+}
 
   .controls {
     margin-top: 1em;
