@@ -4,99 +4,120 @@
   <meta charset="UTF-8">
   <title>GPR Depth Slice Viewer</title>
 
- <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
-    margin: 0;
-    padding: 0;
-  }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
 
-  .viewer {
-    max-width: 1000px;       /* maximum width on large screens */
-    width: 95%;              /* scales down to 95% of viewport on smaller screens */
-    margin: 2em auto;
-    background: #ffffff;
-    padding: 1.5em;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    text-align: center;
-    box-sizing: border-box;   /* ensures padding doesn’t exceed width */
-  }
+    .viewer {
+      max-width: 1000px;
+      width: 95%;
+      margin: 2em auto;
+      background: #ffffff;
+      padding: 1.5em;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-sizing: border-box;
+    }
 
-  h1 {
-    margin-top: 0;
-    font-size: 1.6em;
-  }
-
-  .image-container {
-  border: 1px solid #ccc;
-  margin: 1em 0;
-  padding: 12px;           /* space around image */
-  background: #f9f9f9;     /* subtle contrast */
-}
-
-.image-container img {
-  width: 100%;
-  height: auto;
-  display: block;
-  max-height: 75vh;        /* slightly less tall */
-  object-fit: contain;
-}
-
-  .controls {
-    margin-top: 1em;
-  }
-
-  .depth-label {
-    margin-top: 0.5em;
-    font-weight: bold;
-  }
-
-  input[type=range] {
-  width: 100%;          /* full width of container */
-  height: 20px;         /* taller slider for easy grabbing */
-  -webkit-appearance: none; /* remove default styling for Chrome/Safari */
-  background: #ddd;     /* track color */
-  border-radius: 10px;
-  outline: none;        /* remove focus outline */
-  margin: 10px 0;
-}
-
-/* The slider thumb (the draggable handle) */
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;          /* larger thumb */
-  height: 25px;         /* larger thumb */
-  background: #4CAF50;  /* thumb color */
-  cursor: pointer;
-  border-radius: 50%;   /* round handle */
-  border: 2px solid #333;
-  margin-top: -3px;     /* vertically center thumb on track */
-}
-
-input[type=range]::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  cursor: pointer;
-  border-radius: 50%;
-  border: 2px solid #333;
-}
-
-
-  /* Optional: make fonts slightly smaller on very narrow screens */
-  @media (max-width: 600px) {
     h1 {
-      font-size: 1.3em;
+      margin-top: 0;
+      font-size: 1.6em;
+      text-align: center;
     }
-    .depth-label {
-      font-size: 0.9em;
-    }
-  }
-</style>
 
+    /* === MAIN LAYOUT === */
+    .main-layout {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .image-container {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 12px;
+      background: #f9f9f9;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    /* === SLIDER === */
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 400px;
+    }
+
+    .slider-label {
+      font-size: 0.85em;
+      margin: 4px 0;
+      color: #555;
+    }
+
+    input[type=range] {
+      -webkit-appearance: slider-vertical;
+      writing-mode: bt-lr;
+      width: 20px;
+      height: 100%;
+      background: #ddd;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid #333;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid #333;
+    }
+
+    .depth-label {
+      margin-top: 1em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .main-layout {
+        flex-direction: column;
+      }
+
+      .slider-container {
+        height: 200px;
+        flex-direction: row;
+      }
+
+      input[type=range] {
+        -webkit-appearance: none;
+        writing-mode: lr-tb;
+        width: 100%;
+        height: 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -104,23 +125,29 @@ input[type=range]::-moz-range-thumb {
   <div class="viewer">
     <h1>GPR Depth Slice Viewer</h1>
 
-    <div class="image-container">
-      <img id="sliceImage" src="" alt="GPR depth slice">
+    <div class="main-layout">
+      <div class="image-container">
+        <img id="sliceImage" src="" alt="GPR depth slice">
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-label">Shallow</div>
+
+        <input
+          type="range"
+          id="depthSlider"
+          min="1"
+          max="20"
+          step="1"
+          value="1"
+        >
+
+        <div class="slider-label">Deep</div>
+      </div>
     </div>
 
-    <div class="controls">
-      <input
-        type="range"
-        id="depthSlider"
-        min="1"
-        max="20"
-        step="1"
-        value="1"
-      >
-
-      <div class="depth-label">
-        Depth: <span id="depthValue">0.10</span> m
-      </div>
+    <div class="depth-label">
+      Depth: <span id="depthValue">0.10</span> m
     </div>
   </div>
 
@@ -133,8 +160,8 @@ input[type=range]::-moz-range-thumb {
 
     const numberOfSlices = 50;
 
-    const firstDepth = 0.201875;  // metres
-    const depthStep  = 0.025234375;  // metres per slice
+    const firstDepth = 0.201875;       // metres
+    const depthStep  = 0.025234375;    // metres per slice
 
     // ========================
 
@@ -156,7 +183,6 @@ input[type=range]::-moz-range-thumb {
 
     slider.addEventListener("input", updateSlice);
 
-    // Initialise on page load
     updateSlice();
   </script>
 
