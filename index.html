@@ -150,39 +150,43 @@
   </div>
 
   <script>
-    // ===== USER SETTINGS =====
+  // ===== USER SETTINGS =====
 
-    const imageBasePath = "images/";
-    const imagePrefix = "slice_";
-    const imageExtension = ".jpg";
+  const imageBasePath = "images/";
+  const imagePrefix = "slice_";
+  const imageExtension = ".jpg";
 
-    const numberOfSlices = 50;
+  const numberOfSlices = 50;
 
-    const firstDepth = 0.201875;       // metres
-    const depthStep  = 0.025234375;    // metres per slice
+  const firstDepth = 0.201875;        // metres
+  const depthStep  = 0.025234375;     // metres per slice
 
-    // ========================
+  // ========================
 
-    const slider = document.getElementById("depthSlider");
-    const image  = document.getElementById("sliceImage");
-    const depthText = document.getElementById("depthValue");
+  const slider = document.getElementById("depthSlider");
+  const image  = document.getElementById("sliceImage");
+  const depthText = document.getElementById("depthValue");
 
-    slider.max = numberOfSlices;
+  slider.min = 1;
+  slider.max = numberOfSlices;
+  slider.value = numberOfSlices;   // start at shallow (top)
 
-    function updateSlice() {
-      const index = slider.value;
-      const paddedIndex = index.toString().padStart(2, "0");
+  function updateSlice() {
+    // Flip the slider direction
+    const flippedIndex = numberOfSlices - slider.value + 1;
 
-      image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
+    const paddedIndex = flippedIndex.toString().padStart(2, "0");
+    image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
 
-      const depth = (firstDepth + (index - 1) * depthStep).toFixed(2);
-      depthText.textContent = depth;
-    }
+    const depth = (firstDepth + (flippedIndex - 1) * depthStep).toFixed(2);
+    depthText.textContent = depth;
+  }
 
-    slider.addEventListener("input", updateSlice);
+  slider.addEventListener("input", updateSlice);
 
-    updateSlice();
-  </script>
+  updateSlice();
+</script>
+
 
 </body>
 </html>
