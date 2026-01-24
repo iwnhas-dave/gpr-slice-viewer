@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GPR Depth Slice Viewer</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .viewer {
+      max-width: 900px;
+      margin: 2em auto;
+      background: #ffffff;
+      padding: 1em;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.4em;
+    }
+
+    .image-container {
+      border: 1px solid #ccc;
+      margin: 1em 0;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .controls {
+      margin-top: 1em;
+    }
+
+    .depth-label {
+      margin-top: 0.5em;
+      font-weight: bold;
+    }
+
+    input[type=range] {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="viewer">
+    <h1>GPR Depth Slice Viewer</h1>
+
+    <div class="image-container">
+      <img id="sliceImage" src="" alt="GPR depth slice">
+    </div>
+
+    <div class="controls">
+      <input
+        type="range"
+        id="depthSlider"
+        min="1"
+        max="20"
+        step="1"
+        value="1"
+      >
+
+      <div class="depth-label">
+        Depth: <span id="depthValue">0.10</span> m
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== USER SETTINGS =====
+
+    const imageBasePath = "images/";
+    const imagePrefix = "slice_";
+    const imageExtension = ".png";
+
+    const numberOfSlices = 20;
+
+    const firstDepth = 0.10;  // metres
+    const depthStep  = 0.10;  // metres per slice
+
+    // ========================
+
+    const slider = document.getElementById("depthSlider");
+    const image  = document.getElementById("sliceImage");
+    const depthText = document.getElementById("depthValue");
+
+    slider.max = numberOfSlices;
+
+    function updateSlice() {
+      const index = slider.value;
+      const paddedIndex = index.toString().padStart(2, "0");
+
+      image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
+
+      const depth = (firstDepth + (index - 1) * depthStep).toFixed(2);
+      depthText.textContent = depth;
+    }
+
+    slider.addEventListener("input", updateSlice);
+
+    // Initialise on page load
+    updateSlice();
+  </script>
+
+</body>
+</html>
