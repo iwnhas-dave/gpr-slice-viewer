@@ -55,6 +55,11 @@
       font-weight: bold;
     }
 
+    .velocity-note {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+
     input[type=range] {
       width: 100%;
       height: 20px;
@@ -107,8 +112,12 @@
 
     <div class="controls">
       <div class="depth-label">
-        Depth: <span id="depthValue">0.00</span> m
-      </div>
+        Depth <span class="velocity-note">
+         (v = <span id="velocityValue"></span> m/µs)
+       </span>:
+       <span id="depthValue">0.00</span> m
+
+    </div>
 
      <input
         type="range"
@@ -133,6 +142,7 @@
 
   const firstDepth = 0.201875;           // Depth of first slice (metres)
   const depthStep  = 0.025234375;        // Depth increment per slice (metres)
+  const assumedVelocity = 80;   // m / microsecond
 
   // ========================
 
@@ -140,9 +150,12 @@
   const slider = document.getElementById("depthSlider");
   const image  = document.getElementById("sliceImage");
   const depthText = document.getElementById("depthValue");
+  const velocityText = document.getElementById("velocityValue");
 
   // Match slider range to number of slices
+  velocityText.textContent = assumedVelocity;
   slider.max = numberOfSlices;
+
 
   // Update image and depth label when slider moves
   function updateSlice() {
