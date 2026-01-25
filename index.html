@@ -49,7 +49,9 @@
     }
 
     .depth-label {
-      margin-top: 0.5em;
+      font-size: 1.2em;
+      margin-top: 0;
+      margin-bottom: 0.5em;
       font-weight: bold;
     }
 
@@ -104,54 +106,66 @@
     </div>
 
     <div class="controls">
-      <input
+      <div class="depth-label">
+        Depth: <span id="depthValue">0.00</span> m
+      </div>
+
+     <input
         type="range"
         id="depthSlider"
         min="1"
         step="1"
         value="1"
       >
-
-      <div class="depth-label">
-        Depth: <span id="depthValue">0.00</span> m
-      </div>
+ 
     </div>
   </div>
 
   <script>
-    // ===== USER SETTINGS =====
+  // ===== USER SETTINGS =====
+  // Adjust these values when adding or changing depth slices
 
-    const imageBasePath = "images/";
-    const imagePrefix = "slice_";
-    const imageExtension = ".jpg";
+  const imageBasePath = "images/";      // Folder containing slice images
+  const imagePrefix = "slice_";         // Filename prefix
+  const imageExtension = ".jpg";        // Image file type
 
-    const numberOfSlices = 50;
+  const numberOfSlices = 50;             // Total number of depth slices
 
-    const firstDepth = 0.201875;        // metres
-    const depthStep  = 0.025234375;     // metres per slice
+  const firstDepth = 0.201875;           // Depth of first slice (metres)
+  const depthStep  = 0.025234375;        // Depth increment per slice (metres)
 
-    // ========================
+  // ========================
 
-    const slider = document.getElementById("depthSlider");
-    const image  = document.getElementById("sliceImage");
-    const depthText = document.getElementById("depthValue");
+  // Get references to page elements
+  const slider = document.getElementById("depthSlider");
+  const image  = document.getElementById("sliceImage");
+  const depthText = document.getElementById("depthValue");
 
-    slider.max = numberOfSlices;
+  // Match slider range to number of slices
+  slider.max = numberOfSlices;
 
-    function updateSlice() {
-      const index = slider.value;
-      const paddedIndex = index.toString().padStart(2, "0");
+  // Update image and depth label when slider moves
+  function updateSlice() {
+    const index = slider.value;
 
-      image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
+    // Ensure filenames use two digits (e.g. slice_01.jpg)
+    const paddedIndex = index.toString().padStart(2, "0");
 
-      const depth = (firstDepth + (index - 1) * depthStep).toFixed(2);
-      depthText.textContent = depth;
-    }
+    // Update displayed image
+    image.src = imageBasePath + imagePrefix + paddedIndex + imageExtension;
 
-    slider.addEventListener("input", updateSlice);
+    // Calculate and display depth
+    const depth = (firstDepth + (index - 1) * depthStep).toFixed(2);
+    depthText.textContent = depth;
+  }
 
-    updateSlice();
-  </script>
+  // Update slice as slider is dragged
+  slider.addEventListener("input", updateSlice);
+
+  // Initialise viewer on page load
+  updateSlice();
+</script>
+
 
 </body>
 </html>
