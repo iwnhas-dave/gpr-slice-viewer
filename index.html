@@ -175,6 +175,26 @@
   // Update slice as slider is dragged
   slider.addEventListener("input", updateSlice);
 
+  // Allow mouse wheel to control depth when hovering over the viewer
+  const viewer = document.querySelector(".viewer");
+
+  viewer.addEventListener("wheel", function (event) {
+    event.preventDefault(); // stop page scrolling
+
+    const delta = Math.sign(event.deltaY);
+
+    // deltaY > 0 = wheel down = deeper
+    // deltaY < 0 = wheel up   = shallower
+    let newValue = parseInt(slider.value) + delta;
+
+    // Clamp to slider limits
+    if (newValue < slider.min) newValue = slider.min;
+    if (newValue > slider.max) newValue = slider.max;
+
+    slider.value = newValue;
+    updateSlice();
+  }, { passive: false });
+
   // Initialise viewer on page load
   updateSlice();
 </script>
