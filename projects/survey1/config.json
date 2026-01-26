@@ -1,0 +1,9 @@
+{
+  "title": "Survey 1 – Test Area",
+  "imagePrefix": "slice_",
+  "imageExtension": ".jpg",
+  "numberOfSlices": 50,
+  "firstDepth": 0.201875,
+  "depthStep": 0.025234375,
+  "assumedVelocity": 80
+}

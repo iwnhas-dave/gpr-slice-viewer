@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GPR Depth Slice Viewer</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .viewer {
+      max-width: 800px;
+      width: 95%;
+      margin: 2em auto;
+      background: #ffffff;
+      padding: 1.5em;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.6em;
+    }
+
+    select {
+      margin-bottom: 1em;
+      padding: 0.4em;
+      font-size: 1em;
+    }
+
+    .image-container {
+      border: 1px solid #ccc;
+      margin: 1em 0;
+      padding: 12px;
+      background: #f9f9f9;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    .depth-label {
+      font-size: 1.2em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
+    .velocity-note {
+      font-weight: normal;
+      font-size: 0.8em;
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 20px;
+      -webkit-appearance: none;
+      background: #ddd;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="viewer">
+  <h1 id="viewerTitle">GPR Depth Slice Viewer</h1>
+
+  <select id="projectSelect">
+    <option value="survey1">Survey 1</option>
+    <option value="survey2">Survey 2</option>
+  </select>
+
+  <div class="image-container">
+    <img id="sliceImage" src="" alt="GPR depth slice">
+  </div>
+
+  <div class="depth-label">
+    Depth <span class="velocity-note">
+      (v = <span id="velocityValue"></span> m/µs)
+    </span>:
+    <span id="depthValue">0.00</span> m
+  </div>
+
+  <input type="range" id="depthSlider" min="1" step="1" value="1">
+</div>
+
+<script>
+  // ===== GLOBAL STATE =====
+  let config = {};
+  let currentProject = "";
+
+  const slider = document.getElementById("depthSlider");
+  const image  = document.getElementById("sliceImage");
+  const depthText = document.getElementById("depthValue");
+  const velocityText = document.getElementById("velocityValue");
+  const titleText = document.getElementById("viewerTitle");
+  const projectSelect = document.getElementById("projectSelect");
+
+  // ===== LOAD CONFIG =====
+  async function loadProject(projectName) {
+    try {
+      const response = await fetch(`projects/${projectName}/config.json`);
+      config = await response.json();
+
+      currentProject = projectName;
+
+      titleText.textContent = config.title || "GPR Depth Slice Viewer";
+      velocityText.textContent = config.assumedVelocity;
+      slider.max = config.numberOfSlices;
+      slider.value = 1;
+
+      updateSlice();
+
+    } catch (err) {
+      console.error("Failed to load project:", err);
+    }
+  }
+
+  // ===== UPDATE DISPLAY =====
+  function updateSlice() {
+    const index = slider.value;
+    const paddedIndex = index.toString().padStart(2, "0");
+
+    image.src =
+      `projects/${currentProject}/images/` +
+      config.imagePrefix +
+      paddedIndex +
+      config.imageExtension;
+
+    const depth =
+      (config.firstDepth + (index - 1) * config.depthStep).toFixed(2);
+
+    depthText.textContent = depth;
+  }
+
+  // ===== EVENTS =====
+  slider.addEventListener("input", updateSlice);
+
+  projectSelect.addEventListener("change", () => {
+    loadProject(projectSelect.value);
+  });
+
+  // ===== INITIALISE =====
+  loadProject(projectSelect.value);
+</script>
+
+</body>
+</html>
