@@ -77,10 +77,7 @@
 <div class="viewer">
   <h1 id="viewerTitle">GPR Depth Slice Viewer</h1>
 
-  <select id="projectSelect">
-    <option value="survey1">Survey 1</option>
-    <option value="survey2">Survey 2</option>
-  </select>
+  <select id="projectSelect"></select>
 
   <div class="image-container">
     <img id="sliceImage" src="" alt="GPR depth slice">
@@ -153,7 +150,31 @@
   });
 
   // ===== INITIALISE =====
-  loadProject(projectSelect.value);
+async function loadProjectList() {
+  try {
+    const response = await fetch("projects/projects.json");
+    const projects = await response.json();
+
+    projectSelect.innerHTML = "";
+
+    projects.forEach(project => {
+      const option = document.createElement("option");
+      option.value = project.id;       // folder name
+      option.textContent = project.name; // display name
+      projectSelect.appendChild(option);
+    });
+
+    // Load the first project by default
+    if (projects.length > 0) {
+      loadProject(projects[0].id);
+    }
+
+  } catch (err) {
+    console.error("Failed to load project list:", err);
+  }
+}
+
+  loadProjectList();
 </script>
 
 </body>
