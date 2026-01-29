@@ -1,0 +1,10 @@
+{
+  "title": "Mottistone Manor Lower Garden area B",
+  "imagePrefix": "slice_",
+  "imageExtension": ".jpg",
+  "numberOfSlices": 67,
+  "firstSlice": 7,
+  "firstDepth": 0.132890625,
+  "depthStep": 0.018984375,
+  "assumedVelocity": 70
+}
