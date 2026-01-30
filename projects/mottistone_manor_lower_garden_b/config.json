@@ -4,7 +4,7 @@
   "imageExtension": ".jpg",
   "numberOfSlices": 67,
   "firstSlice": 7,
-  "firstDepth": 0.132890625,
+  "firstDepth": 0.13986328125,
   "depthStep": 0.018984375,
   "assumedVelocity": 70
 }
